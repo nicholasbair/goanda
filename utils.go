@@ -11,7 +11,7 @@ import (
 
 func checkErr(err error) {
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 }
 
@@ -19,7 +19,7 @@ func checkApiErr(body []byte, route string) {
 	bodyString := string(body[:])
 	if strings.Contains(bodyString, "errorMessage") {
 		log.SetFlags(log.LstdFlags | log.Llongfile)
-		log.Fatal("\nOANDA API Error: " + bodyString + "\nOn route: " + route)
+		log.Println("\nOANDA API Error: " + bodyString + "\nOn route: " + route)
 	}
 }
 
