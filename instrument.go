@@ -3,6 +3,7 @@ package goanda
 // Supporting OANDA docs - http://developer.oanda.com/rest-live-v20/instrument-ep/
 
 import (
+	"strconv"
 	"time"
 )
 
@@ -105,6 +106,27 @@ type InstrumentPricing struct {
 
 func (c *OandaConnection) GetCandles(instrument string, count string, granularity string) InstrumentHistory {
 	endpoint := "/instruments/" + instrument + "/candles?count=" + count + "&granularity=" + granularity
+	candles := c.Request(endpoint)
+	data := InstrumentHistory{}
+	unmarshalJson(candles, &data)
+
+	return data
+}
+/*
+	Gets candles by to and from time.
+
+	param: instrument  string Symbol to query.
+    param: count       string The number of candlesticks to return in the response.
+    param: granularity string The granularity of the candlesticks to fetch. i.e., S5, S15, M1, M15, M30, H1, D, W, M.
+    param: to          string The start of the time range to fetch candlesticks for, represented in Unix representation.
+    param: from        string The end of the time range to fetch candlesticks for, represented in Unix representation.
+    param: smooth      bool   A smoothed candlestick uses the previous candle’s close price as its open price, while an un-smoothed candlestick uses the first price from its time range as its open price..
+
+    return: InstrumentHistory
+*/
+func (c *OandaConnection) GetCandlesByTime(instrument string, count string, granularity string, from string, to string, smooth bool) InstrumentHistory {
+	endpoint := "/instruments/" + instrument + "/candles?count=" + count + "&granularity=" + granularity + "&price=BA" +
+		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
 	candles := c.Request(endpoint)
 	data := InstrumentHistory{}
 	unmarshalJson(candles, &data)
