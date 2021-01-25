@@ -70,7 +70,7 @@ func NewConnection(accountID string, token string, live bool) *OandaConnection {
 }
 
 // TODO: include params as a second option
-func (c *OandaConnection) Request(endpoint string) []byte {
+func (c *OandaConnection) Request(endpoint string) ([]byte, error) {
 	client := http.Client{
 		Timeout: time.Second * 5, // 5 sec timeout
 	}
@@ -81,12 +81,12 @@ func (c *OandaConnection) Request(endpoint string) []byte {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	checkErr(err)
 
-	body := makeRequest(c, endpoint, client, req)
+	body, err := makeRequest(c, endpoint, client, req)
 
-	return body
+	return body, err
 }
 
-func (c *OandaConnection) Send(endpoint string, data []byte) []byte {
+func (c *OandaConnection) Send(endpoint string, data []byte) ([]byte, error) {
 	client := http.Client{
 		Timeout: time.Second * 5, // 5 sec timeout
 	}
@@ -97,12 +97,12 @@ func (c *OandaConnection) Send(endpoint string, data []byte) []byte {
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
 	checkErr(err)
 
-	body := makeRequest(c, endpoint, client, req)
+	body, err := makeRequest(c, endpoint, client, req)
 
-	return body
+	return body, err
 }
 
-func (c *OandaConnection) Update(endpoint string, data []byte) []byte {
+func (c *OandaConnection) Update(endpoint string, data []byte) ([]byte, error) {
 	client := http.Client{
 		Timeout: time.Second * 5,
 	}
@@ -111,6 +111,6 @@ func (c *OandaConnection) Update(endpoint string, data []byte) []byte {
 
 	req, err := http.NewRequest(http.MethodPut, url, bytes.NewBuffer(data))
 	checkErr(err)
-	body := makeRequest(c, endpoint, client, req)
-	return body
+	body, err := makeRequest(c, endpoint, client, req)
+	return body, err
 }

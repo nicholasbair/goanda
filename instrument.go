@@ -3,7 +3,6 @@ package goanda
 // Supporting OANDA docs - http://developer.oanda.com/rest-live-v20/instrument-ep/
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 )
@@ -46,6 +45,11 @@ type InstrumentHistory struct {
 	Instrument  string    `json:"instrument"`
 	Granularity string    `json:"granularity"`
 	Candles     []Candles `json:"candles"`
+}
+type InstrumentBidAksHistory struct {
+	Instrument  string          `json:"instrument"`
+	Granularity string          `json:"granularity"`
+	Candles     []BidAskCandles `json:"candles"`
 }
 
 type Bucket struct {
@@ -105,14 +109,19 @@ type InstrumentPricing struct {
 	} `json:"prices"`
 }
 
-func (c *OandaConnection) GetCandles(instrument string, count string, granularity string) InstrumentHistory {
+func (c *OandaConnection) GetCandles(instrument string, count string, granularity string) (InstrumentHistory, error) {
 	endpoint := "/instruments/" + instrument + "/candles?count=" + count + "&granularity=" + granularity
-	candles := c.Request(endpoint)
+	candles, err := c.Request(endpoint)
+	if err != nil {
+		return InstrumentHistory{}, err
+	}
+
 	data := InstrumentHistory{}
 	unmarshalJson(candles, &data)
 
-	return data
+	return data, nil
 }
+
 /*
 	Gets candles by to and from time.
 
@@ -125,50 +134,92 @@ func (c *OandaConnection) GetCandles(instrument string, count string, granularit
 
     return: InstrumentHistory
 */
-func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) InstrumentHistory {
-	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity + "&price=BA" +
+func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentHistory, error) {
+	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity +
 		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
-	candles := c.Request(endpoint)
-	fmt.Println("Returned value:")
-	fmt.Println(candles)
-	fmt.Println("Returned value end ")
+	candles, err := c.Request(endpoint)
+	if err != nil {
+		return InstrumentHistory{}, err
+	}
+
 	data := InstrumentHistory{}
 	unmarshalJson(candles, &data)
-	return data
+	return data, nil
 }
 
-func (c *OandaConnection) GetBidAskCandles(instrument string, count string, granularity string) BidAskCandles {
+/*
+	Gets candles by to and from time.
+
+	param: instrument  string Symbol to query.
+    param: count       string The number of candlesticks to return in the response.
+    param: granularity string The granularity of the candlesticks to fetch. i.e., S5, S15, M1, M15, M30, H1, D, W, M.
+    param: to          string The start of the time range to fetch candlesticks for, represented in Unix representation.
+    param: from        string The end of the time range to fetch candlesticks for, represented in Unix representation.
+    param: smooth      bool   A smoothed candlestick uses the previous candle’s close price as its open price, while an un-smoothed candlestick uses the first price from its time range as its open price..
+
+    return: InstrumentBidAksHistory
+*/
+func (c *OandaConnection) GetBidAsksCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentBidAksHistory, error) {
+	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity + "&price=BA" +
+		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
+	candles, err := c.Request(endpoint)
+	if err != nil {
+		return InstrumentBidAksHistory{}, err
+	}
+
+	data := InstrumentBidAksHistory{}
+	unmarshalJson(candles, &data)
+	return data, nil
+}
+
+func (c *OandaConnection) GetBidAskCandles(instrument string, count string, granularity string) (BidAskCandles, error) {
 	endpoint := "/instruments/" + instrument + "/candles?count=" + count + "&granularity=" + granularity + "&price=BA"
-	candles := c.Request(endpoint)
+	candles, err := c.Request(endpoint)
+	if err != nil {
+		return BidAskCandles{}, err
+	}
+
 	data := BidAskCandles{}
 	unmarshalJson(candles, &data)
 
-	return data
+	return data, nil
 }
 
-func (c *OandaConnection) OrderBook(instrument string) BrokerBook {
+func (c *OandaConnection) OrderBook(instrument string) (BrokerBook, error) {
 	endpoint := "/instruments/" + instrument + "/orderBook"
-	orderbook := c.Request(endpoint)
+	orderbook, err := c.Request(endpoint)
+	if err != nil {
+		return BrokerBook{}, err
+	}
+
 	data := BrokerBook{}
 	unmarshalJson(orderbook, &data)
 
-	return data
+	return data, nil
 }
 
-func (c *OandaConnection) PositionBook(instrument string) BrokerBook {
+func (c *OandaConnection) PositionBook(instrument string) (BrokerBook, error) {
 	endpoint := "/instruments/" + instrument + "/positionBook"
-	orderbook := c.Request(endpoint)
+	orderbook, err := c.Request(endpoint)
+	if err != nil {
+		return BrokerBook{}, err
+	}
+
 	data := BrokerBook{}
 	unmarshalJson(orderbook, &data)
 
-	return data
+	return data, nil
 }
 
-func (c *OandaConnection) GetInstrumentPrice(instrument string) InstrumentPricing {
+func (c *OandaConnection) GetInstrumentPrice(instrument string) (InstrumentPricing, error) {
 	endpoint := "/accounts/" + c.accountID + "/pricing?instruments=" + instrument
-	pricing := c.Request(endpoint)
+	pricing, err := c.Request(endpoint)
+	if err != nil {
+		return InstrumentPricing{}, err
+	}
+
 	data := InstrumentPricing{}
 	unmarshalJson(pricing, &data)
 
-	return data
+	return data, nil
 }
