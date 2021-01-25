@@ -3,6 +3,7 @@ package goanda
 // Supporting OANDA docs - http://developer.oanda.com/rest-live-v20/instrument-ep/
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
@@ -128,9 +129,11 @@ func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string
 	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity + "&price=BA" +
 		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
 	candles := c.Request(endpoint)
+	fmt.Println("Returned value:")
+	fmt.Println(candles)
+	fmt.Println("Returned value end ")
 	data := InstrumentHistory{}
 	unmarshalJson(candles, &data)
-
 	return data
 }
 
