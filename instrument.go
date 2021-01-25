@@ -124,8 +124,8 @@ func (c *OandaConnection) GetCandles(instrument string, count string, granularit
 
     return: InstrumentHistory
 */
-func (c *OandaConnection) GetCandlesByTime(instrument string, count string, granularity string, from string, to string, smooth bool) InstrumentHistory {
-	endpoint := "/instruments/" + instrument + "/candles?count=" + count + "&granularity=" + granularity + "&price=BA" +
+func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) InstrumentHistory {
+	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity + "&price=BA" +
 		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
 	candles := c.Request(endpoint)
 	data := InstrumentHistory{}
