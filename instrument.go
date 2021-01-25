@@ -132,7 +132,7 @@ func (c *OandaConnection) GetCandles(instrument string, count string, granularit
     param: from        string The end of the time range to fetch candlesticks for, represented in Unix representation.
     param: smooth      bool   A smoothed candlestick uses the previous candle’s close price as its open price, while an un-smoothed candlestick uses the first price from its time range as its open price..
 
-    return: InstrumentHistory
+    return: InstrumentHistory, error
 */
 func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentHistory, error) {
 	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity +
@@ -157,7 +157,7 @@ func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string
     param: from        string The end of the time range to fetch candlesticks for, represented in Unix representation.
     param: smooth      bool   A smoothed candlestick uses the previous candle’s close price as its open price, while an un-smoothed candlestick uses the first price from its time range as its open price..
 
-    return: InstrumentBidAksHistory
+    return: InstrumentBidAksHistory, error
 */
 func (c *OandaConnection) GetBidAsksCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentBidAksHistory, error) {
 	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity + "&price=BA" +
