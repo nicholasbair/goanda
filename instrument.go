@@ -223,3 +223,48 @@ func (c *OandaConnection) GetInstrumentPrice(instrument string) (InstrumentPrici
 
 	return data, nil
 }
+
+func (i *InstrumentHistory) extractClosed() []float64 {
+	var list []float64
+	for _, candle := range i.Candles {
+		list = append(list, candle.Mid.Close)
+	}
+
+	return list
+}
+
+func (i *InstrumentHistory) extractOpen() []float64 {
+	var list []float64
+	for _, candle := range i.Candles {
+		list = append(list, candle.Mid.Open)
+	}
+
+	return list
+}
+
+func (i *InstrumentHistory) extractHigh() []float64 {
+	var list []float64
+	for _, candle := range i.Candles {
+		list = append(list, candle.Mid.High)
+	}
+
+	return list
+}
+
+func (i *InstrumentHistory) extractLow() []float64 {
+	var list []float64
+	for _, candle := range i.Candles {
+		list = append(list, candle.Mid.Low)
+	}
+
+	return list
+}
+
+func (i *InstrumentHistory) extractVol() []int {
+	var list []int
+	for _, candle := range i.Candles {
+		list = append(list, candle.Volume)
+	}
+
+	return list
+}
