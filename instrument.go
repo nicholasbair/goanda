@@ -224,7 +224,7 @@ func (c *OandaConnection) GetInstrumentPrice(instrument string) (InstrumentPrici
 	return data, nil
 }
 
-func (i *InstrumentHistory) extractClosed() []float64 {
+func (i *InstrumentHistory) ExtractClosed() []float64 {
 	var list []float64
 	for _, candle := range i.Candles {
 		list = append(list, candle.Mid.Close)
@@ -233,7 +233,7 @@ func (i *InstrumentHistory) extractClosed() []float64 {
 	return list
 }
 
-func (i *InstrumentHistory) extractOpen() []float64 {
+func (i *InstrumentHistory) ExtractOpen() []float64 {
 	var list []float64
 	for _, candle := range i.Candles {
 		list = append(list, candle.Mid.Open)
@@ -242,7 +242,7 @@ func (i *InstrumentHistory) extractOpen() []float64 {
 	return list
 }
 
-func (i *InstrumentHistory) extractHigh() []float64 {
+func (i *InstrumentHistory) ExtractHigh() []float64 {
 	var list []float64
 	for _, candle := range i.Candles {
 		list = append(list, candle.Mid.High)
@@ -251,7 +251,7 @@ func (i *InstrumentHistory) extractHigh() []float64 {
 	return list
 }
 
-func (i *InstrumentHistory) extractLow() []float64 {
+func (i *InstrumentHistory) ExtractLow() []float64 {
 	var list []float64
 	for _, candle := range i.Candles {
 		list = append(list, candle.Mid.Low)
@@ -260,7 +260,7 @@ func (i *InstrumentHistory) extractLow() []float64 {
 	return list
 }
 
-func (i *InstrumentHistory) extractVol() []int {
+func (i *InstrumentHistory) ExtractVol() []int {
 	var list []int
 	for _, candle := range i.Candles {
 		list = append(list, candle.Volume)
