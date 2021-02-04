@@ -126,7 +126,7 @@ func (c *OandaConnection) GetCandles(instrument string, count string, granularit
 	Gets candles by to and from time.
 
 	param: instrument  string Symbol to query.
-    param: count       int64  The number of candlesticks to return in the response.
+    param: count       int64  The number of candlesticks to return in the response. Can't use when to and from is set.
     param: granularity string The granularity of the candlesticks to fetch. i.e., S5, S15, M1, M15, M30, H1, D, W, M.
     param: to          string The start of the time range to fetch candlesticks for, represented in Unix representation.
     param: from        string The end of the time range to fetch candlesticks for, represented in Unix representation.
@@ -134,9 +134,9 @@ func (c *OandaConnection) GetCandles(instrument string, count string, granularit
 
     return: InstrumentHistory, error
 */
-func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool, count int64) (InstrumentHistory, error) {
+func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentHistory, error) {
 	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity +
-		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth) + "&count=" + strconv.FormatInt(count, 10)
+		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
 	candles, err := c.Request(endpoint)
 	if err != nil {
 		return InstrumentHistory{}, err
@@ -151,7 +151,7 @@ func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string
 	Gets candles by to and from time.
 
 	param: instrument  string Symbol to query.
-    param: count       int64  The number of candlesticks to return in the response.
+    param: count       int64  The number of candlesticks to return in the response. Can't use when to and from is set.
     param: granularity string The granularity of the candlesticks to fetch. i.e., S5, S15, M1, M15, M30, H1, D, W, M.
     param: to          string The start of the time range to fetch candlesticks for, represented in Unix representation.
     param: from        string The end of the time range to fetch candlesticks for, represented in Unix representation.
@@ -159,9 +159,9 @@ func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string
 
     return: InstrumentBidAksHistory, error
 */
-func (c *OandaConnection) GetBidAsksCandlesByTime(instrument string, granularity string, from string, to string, smooth bool, count int64) (InstrumentBidAksHistory, error) {
+func (c *OandaConnection) GetBidAsksCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentBidAksHistory, error) {
 	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity + "&price=BA" +
-		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth) + "&count=" + strconv.FormatInt(count, 10)
+		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
 	candles, err := c.Request(endpoint)
 	if err != nil {
 		return InstrumentBidAksHistory{}, err
