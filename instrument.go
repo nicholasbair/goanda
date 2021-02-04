@@ -134,9 +134,9 @@ func (c *OandaConnection) GetCandles(instrument string, count string, granularit
 
     return: InstrumentHistory, error
 */
-func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool) (InstrumentHistory, error) {
+func (c *OandaConnection) GetCandlesByTime(instrument string, granularity string, from string, to string, smooth bool, count int) (InstrumentHistory, error) {
 	endpoint := "/instruments/" + instrument + "/candles?" + "&granularity=" + granularity +
-		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth)
+		"&from=" + from + "&to=" + to + "&smooth=" + strconv.FormatBool(smooth) + "&count=" + string(count)
 	candles, err := c.Request(endpoint)
 	if err != nil {
 		return InstrumentHistory{}, err
