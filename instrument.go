@@ -268,3 +268,12 @@ func (i *InstrumentHistory) ExtractVol() []int {
 
 	return list
 }
+
+func (i *InstrumentHistory) ExtractTime() []time.Time {
+	var list []time.Time
+	for _, candle := range i.Candles {
+		list = append(list, candle.Time)
+	}
+
+	return list
+}
