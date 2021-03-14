@@ -35,14 +35,6 @@ type OandaConnection struct {
 const OANDA_AGENT string = "v20-golang/0.0.1"
 
 func NewConnection(accountID string, token string, live bool) *OandaConnection {
-	hostname := ""
-	// should we use the live API?
-	if live {
-		hostname = "https://api-fxtrade.oanda.com/v3"
-	} else {
-		hostname = "http://localhost:3000"
-	}
-
 	var buffer bytes.Buffer
 	// Generate the auth header
 	buffer.WriteString("Bearer ")
@@ -57,13 +49,25 @@ func NewConnection(accountID string, token string, live bool) *OandaConnection {
 		auth:           authHeader,
 	}
 	// Create the connection object
-	connection := &OandaConnection{
-		hostname:  hostname,
-		port:      443,
-		ssl:       true,
-		token:     token,
-		headers:   headers,
-		accountID: accountID,
+	var connection *OandaConnection
+
+	if live {
+		connection = &OandaConnection{
+			hostname:  "https://api-fxtrade.oanda.com/v3",
+			port:      443,
+			ssl:       true,
+			token:     token,
+			headers:   headers,
+			accountID: accountID,
+		}
+	} else {
+		connection = &OandaConnection{
+			hostname:  "http://localhost:3000",
+			ssl:       false,
+			token:     token,
+			headers:   headers,
+			accountID: accountID,
+		}
 	}
 
 	return connection
