@@ -40,7 +40,7 @@ func NewConnection(accountID string, token string, live bool) *OandaConnection {
 	if live {
 		hostname = "https://api-fxtrade.oanda.com/v3"
 	} else {
-		hostname = "localhost:3000"
+		hostname = "http://localhost:3000"
 	}
 
 	var buffer bytes.Buffer
