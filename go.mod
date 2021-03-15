@@ -1,4 +1,4 @@
-module goanda
+module github.com/nicholasbair/goanda
 
 go 1.15
 
