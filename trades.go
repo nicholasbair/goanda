@@ -10,20 +10,27 @@ import (
 type ReceivedTrades struct {
 	LastTransactionID string `json:"lastTransactionID"`
 	Trades            []struct {
-		CurrentUnits          string             `json:"currentUnits"`
-		Financing             string             `json:"financing"`
-		ID                    string             `json:"id"`
-		InitialUnits          string             `json:"initialUnits"`
-		Instrument            string             `json:"instrument"`
-		OpenTime              time.Time          `json:"openTime"`
-		Price                 string             `json:"price"`
-		RealizedPL            string             `json:"realizedPL"`
-		State                 string             `json:"state"`
-		StopLossOrder         ReceivedTradeOrder `json:"stopLossOrder"`
-		TakeProfitOrder       ReceivedTradeOrder `json:"takeProfitOrder"`
-		TrailingStopLossOrder ReceivedTradeOrder `json:"trailingStopLossOrder"`
-		UnrealizedPL          string             `json:"unrealizedPL"`
+		CurrentUnits          string                        `json:"currentUnits"`
+		Financing             string                        `json:"financing"`
+		ID                    string                        `json:"id"`
+		InitialUnits          string                        `json:"initialUnits"`
+		Instrument            string                        `json:"instrument"`
+		OpenTime              time.Time                     `json:"openTime"`
+		Price                 string                        `json:"price"`
+		RealizedPL            string                        `json:"realizedPL"`
+		State                 string                        `json:"state"`
+		StopLossOrder         ReceivedTradeOrder            `json:"stopLossOrder,omitempty"`
+		TakeProfitOrder       ReceivedTradeOrder            `json:"takeProfitOrder,omitempty"`
+		TrailingStopLossOrder ReceivedTradeOrder            `json:"trailingStopLossOrder,omitempty"`
+		UnrealizedPL          string                        `json:"unrealizedPL"`
+		ClientExtensions      ReceivedTradeClientExtensions `json:"clientExtensions,omitempty"`
 	} `json:"trades"`
+}
+
+type ReceivedTradeClientExtensions struct {
+	Comment string `json:"comment,omitempty"`
+	ID      string `json:"id,omitempty"`
+	Tag     string `json:"tag,omitempty"`
 }
 
 type ReceivedTradeOrder struct {
