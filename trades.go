@@ -10,17 +10,24 @@ import (
 type ReceivedTrades struct {
 	LastTransactionID string `json:"lastTransactionID"`
 	Trades            []struct {
-		CurrentUnits string    `json:"currentUnits"`
-		Financing    string    `json:"financing"`
-		ID           string    `json:"id"`
-		InitialUnits string    `json:"initialUnits"`
-		Instrument   string    `json:"instrument"`
-		OpenTime     time.Time `json:"openTime"`
-		Price        string    `json:"price"`
-		RealizedPL   string    `json:"realizedPL"`
-		State        string    `json:"state"`
-		UnrealizedPL string    `json:"unrealizedPL"`
+		CurrentUnits          string             `json:"currentUnits"`
+		Financing             string             `json:"financing"`
+		ID                    string             `json:"id"`
+		InitialUnits          string             `json:"initialUnits"`
+		Instrument            string             `json:"instrument"`
+		OpenTime              time.Time          `json:"openTime"`
+		Price                 string             `json:"price"`
+		RealizedPL            string             `json:"realizedPL"`
+		State                 string             `json:"state"`
+		StopLossOrder         ReceivedTradeOrder `json:"stopLossOrder"`
+		TakeProfitOrder       ReceivedTradeOrder `json:"takeProfitOrder"`
+		TrailingStopLossOrder ReceivedTradeOrder `json:"trailingStopLossOrder"`
+		UnrealizedPL          string             `json:"unrealizedPL"`
 	} `json:"trades"`
+}
+
+type ReceivedTradeOrder struct {
+	Price string `json:"price"`
 }
 
 type ReceivedTrade struct {
@@ -41,6 +48,12 @@ type ReceivedTrade struct {
 
 type CloseTradePayload struct {
 	Units string
+}
+
+type UpdateTradeOrdersPayload struct {
+	StopLoss         OnFill `json:"stopLoss"`
+	TakeProfit       OnFill `json:"takeProfit"`
+	TrailingStopLoss OnFill `json:"trailingStopLoss"`
 }
 
 type ModifiedTrade struct {
@@ -154,6 +167,23 @@ func (c *OandaConnection) GetTrade(ticket string) (ReceivedTrade, error) {
 // Default is close the whole position using the string "ALL" in body.units
 func (c *OandaConnection) ReduceTradeSize(ticket string, body CloseTradePayload) (ModifiedTrade, error) {
 	endpoint := "/accounts/" + c.accountID + "/trades/" + ticket
+	jsonBody, err := json.Marshal(body)
+	if err != nil {
+		return ModifiedTrade{}, err
+	}
+
+	response, err := c.Update(endpoint, jsonBody)
+	if err != nil {
+		return ModifiedTrade{}, err
+	}
+
+	data := ModifiedTrade{}
+	unmarshalJson(response, &data)
+	return data, nil
+}
+
+func (c *OandaConnection) UpdateTradeOrders(tradeId string, body UpdateTradeOrdersPayload) (ModifiedTrade, error) {
+	endpoint := "/accounts/" + c.accountID + "/trades/" + tradeId + "/orders"
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
 		return ModifiedTrade{}, err
